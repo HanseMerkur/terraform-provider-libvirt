@@ -48,6 +48,8 @@ func TestAccLibvirtDomain_Detailed(t *testing.T) {
 	var domain libvirt.Domain
 	randomResourceName := acctest.RandStringFromCharSet(10, acctest.CharSetAlpha)
 	randomDomainName := acctest.RandStringFromCharSet(10, acctest.CharSetAlpha)
+	randomTagName := acctest.RandString(10)
+	randomTagValue := acctest.RandString(10)
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
@@ -59,7 +61,10 @@ func TestAccLibvirtDomain_Detailed(t *testing.T) {
 					name   = "%s"
 					memory = 384
 					vcpu   = 2
-				}`, randomResourceName, randomDomainName),
+					tags {
+						%s = "%s"
+					}
+				}`, randomResourceName, randomDomainName, randomTagName, randomTagValue),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckLibvirtDomainExists("libvirt_domain."+randomResourceName, &domain),
 					resource.TestCheckResourceAttr(
@@ -68,6 +73,10 @@ func TestAccLibvirtDomain_Detailed(t *testing.T) {
 						"libvirt_domain."+randomResourceName, "memory", "384"),
 					resource.TestCheckResourceAttr(
 						"libvirt_domain."+randomResourceName, "vcpu", "2"),
+					resource.TestCheckResourceAttr(
+						"libvirt_domain."+randomResourceName, "tags.#", "1"),
+					resource.TestCheckResourceAttr(
+						"libvirt_domain."+randomResourceName, "tags."+randomTagName, randomTagValue),
 				),
 			},
 		},
