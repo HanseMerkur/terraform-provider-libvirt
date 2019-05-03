@@ -652,13 +652,26 @@ func resourceLibvirtDomainUpdate(d *schema.ResourceData, meta interface{}) error
 	}
 
 	if d.HasChange("tags") {
+		// Grab currently live metadata
 		out := TerraformInstanceXML{}
-		var xml string
-		if xml, err = tagsToXML(d.Get("tags").(map[string]interface{}), &out); err != nil {
+		var onlineMetadata string
+		onlineMetadata, err = domain.GetMetadata(libvirt.DOMAIN_METADATA_ELEMENT,
+			"https://terraform.io", libvirt.DOMAIN_AFFECT_LIVE|libvirt.DOMAIN_AFFECT_CONFIG)
+		if err != nil {
 			return err
 		}
-		log.Printf("[DEBUG] New Metadata XML: %s", xml)
-		err = domain.SetMetadata(libvirt.DOMAIN_METADATA_ELEMENT, xml, "terraform", "https://terraform.io",
+		if err = xml.Unmarshal([]byte(onlineMetadata), &out); err != nil {
+			return err
+		}
+
+		var outXML string
+		if outXML, err = tagsToXML(d.Get("tags").(map[string]interface{}), &out); err != nil {
+			return err
+		}
+		log.Printf("[DEBUG] New Metadata XML: %s", outXML)
+
+		// Update live and stored config with new metadata
+		err = domain.SetMetadata(libvirt.DOMAIN_METADATA_ELEMENT, outXML, "terraform", "https://terraform.io",
 			libvirt.DOMAIN_AFFECT_LIVE|libvirt.DOMAIN_AFFECT_CONFIG)
 		if err != nil {
 			return err
