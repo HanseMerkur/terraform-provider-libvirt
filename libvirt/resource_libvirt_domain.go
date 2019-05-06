@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/HanseMerkur/terraform-provider-libvirt/libvirt/helper/suppress"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/dmacvicar/terraform-provider-libvirt/libvirt/helper/suppress"
 	"github.com/hashicorp/terraform/helper/schema"
 	libvirt "github.com/libvirt/libvirt-go"
 	libvirtxml "github.com/libvirt/libvirt-go-xml"
