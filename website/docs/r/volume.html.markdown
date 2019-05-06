@@ -68,7 +68,7 @@ The following arguments are supported:
   copying it. Useful for network volumes such as Ceph RBD. Changes the call
   equivalent from `vol-create-from` to `vol-clone`.
   *Note* Libvirt currently has a bug with Ceph RBD clones. This will be fixed in Libvirt 5.3.0. The patch is available
-  on the [livir-mailinglist](https://www.redhat.com/archives/libvir-list/2019-April/msg01483.html) and can be applied
+  on the [livir-mailinglist](https://www.redhat.com/archives/libvir-list/2019-April/msg01483.html) and can be appllied
   to all libvirt versions 2 or higher.
 
 ### Altering libvirt's generated volume XML definition
